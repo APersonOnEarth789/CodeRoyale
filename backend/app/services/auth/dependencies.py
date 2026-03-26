@@ -5,9 +5,10 @@ from jwt.exceptions import PyJWTError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .utils import verify_password, SECRET_KEY, ALGORITHM
-from .models import TokenData
+from .schemas import TokenData
 from app.services.users.models import User
 from app.core.database import engine, SessionLocal, Base
+from typing import Annotated
 
 Base.metadata.create_all(bind=engine)
 
@@ -31,7 +32,7 @@ def authenticate_user(db: Session, username: str, password: str):
         return None
     return user
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def get_current_user(db: Annotated[Session, Depends(get_db)], token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
