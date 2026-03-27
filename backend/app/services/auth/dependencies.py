@@ -1,18 +1,12 @@
-from flask import g, abort
+from flask import abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import select
-from sqlalchemy.orm import scoped_session
 from .utils import verify_password
 from app.services.users.models import User
-from app.core.database import SessionLocal
-
-def get_db():
-    if "db" not in g:
-        g.db = scoped_session(SessionLocal)
-    return g.db
+from app.core.database import db
 
 def get_user(username: str):
-    return get_db().execute(select(User).filter_by(username=username)).scalar_one_or_none()
+    return db.session.execute(select(User).filter_by(username=username)).scalar_one_or_none()
 
 def authenticate_user(username: str, password: str):
     user = get_user(username)
