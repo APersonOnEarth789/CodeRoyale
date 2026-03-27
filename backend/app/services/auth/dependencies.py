@@ -1,52 +1,32 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-import jwt
-from jwt.exceptions import PyJWTError
+from flask import g, abort
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app import jwt
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-from .utils import verify_password, SECRET_KEY, ALGORITHM
-from .schemas import TokenData
+from sqlalchemy.orm import scoped_session
+from .utils import verify_password
 from app.services.users.models import User
-from app.core.database import engine, SessionLocal, Base
-from typing import Annotated
-
-Base.metadata.create_all(bind=engine)
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+from app.core.database import SessionLocal
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    if "db" not in g:
+        g.db = scoped_session(SessionLocal)
+    return g.db
 
-def get_user(db: Session, username: str):
-    return db.execute(select(User).filter_by(username=username)).scalar_one_or_none()
+def get_user(username: str):
+    return get_db().execute(select(User).filter_by(username=username)).scalar_one_or_none()
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
-    if not user:
-        return None
-    if not verify_password(password, user.hashed_password):
+def authenticate_user(username: str, password: str):
+    user = get_user(username)
+    if not user or not verify_password(password, user.hashed_password):
         return None
     return user
 
-def get_current_user(db: Annotated[Session, Depends(get_db)], token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except PyJWTError:
-        raise credentials_exception
-    user = get_user(db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
+@jwt_required()
+def get_current_user():
+    username = get_jwt_identity()
+    if not username:
+        abort(401, description="Could not validate credentials")
+    user = get_user(username)
+    if not user:
+        abort(401, description="Could not find user")
     return user
