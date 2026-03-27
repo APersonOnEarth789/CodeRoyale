@@ -1,6 +1,5 @@
 from flask import g, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import jwt
 from sqlalchemy import select
 from sqlalchemy.orm import scoped_session
 from .utils import verify_password
