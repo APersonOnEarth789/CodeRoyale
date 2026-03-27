@@ -5,7 +5,7 @@ from .dependencies import authenticate_user, get_user
 from .schemas import Token
 from app.services.users.models import User
 from app.services.users.schemas import UserCreate, UserResponse
-from .utils import create_access_token, get_password_hash
+from .utils import get_password_hash
 from app.core.database import db
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -27,7 +27,7 @@ def signup(body: UserCreate) -> UserResponse:
         abort(400, description="Username is already registered")
     hashed_password = get_password_hash(body.password)
     db_user = User(username=body.username, hashed_password=hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    db.session.add(db_user)
+    db.session.commit()
+    db.session.refresh(db_user)
     return UserResponse.model_validate(db_user)
