@@ -1,5 +1,5 @@
 from flask import abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import select
 from .utils import verify_password
 from app.services.users.models import User
@@ -14,7 +14,6 @@ def authenticate_user(username: str, password: str):
         return None
     return user
 
-@jwt_required()
 def get_current_user():
     username = get_jwt_identity()
     if not username:
