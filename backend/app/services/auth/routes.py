@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token
 from .dependencies import authenticate_user, get_user
 from .schemas import Token
 from app.services.users.models import User
-from app.services.users.schemas import UserCreate, UserResponse
+from app.services.users.schemas import UserCreate, UserLogin, UserResponse
 from .utils import get_password_hash
 from app.core.database import db
 
