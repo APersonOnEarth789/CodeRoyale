@@ -1,10 +1,4 @@
 from passlib.context import CryptContext
-import jwt
-from datetime import datetime, timedelta
-
-SECRET_KEY = "CodeRoyale"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
