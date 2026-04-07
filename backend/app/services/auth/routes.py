@@ -12,7 +12,7 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_bp.route("/token", methods=["POST"])
 @validate()
-def login_for_access_token(body: UserCreate) -> Token:
+def login_for_access_token(body: UserLogin) -> Token:
     user = authenticate_user(body.username, body.password)
     if not user:
         abort(401, description="Incorrect username or password")
