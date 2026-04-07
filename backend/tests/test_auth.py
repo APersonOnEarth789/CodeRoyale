@@ -1,4 +1,3 @@
-import pytest
 from tests.utils import signup_user, login_user, assert_validation_error
 
 # Test new user signup

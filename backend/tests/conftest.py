@@ -13,7 +13,9 @@ def app():
         # Set up testing schema
         db.create_all()
         yield app
+        db.session.remove()
         db.drop_all()
+        db.engine.dispose()
 
 @pytest.fixture
 def client(app):
