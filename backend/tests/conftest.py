@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 from app.core.database import db
+from app.core.redis import r
 
 @pytest.fixture
 def app():
@@ -16,6 +17,7 @@ def app():
         db.session.remove()
         db.drop_all()
         db.engine.dispose()
+        r.flushdb()
 
 @pytest.fixture
 def client(app):
