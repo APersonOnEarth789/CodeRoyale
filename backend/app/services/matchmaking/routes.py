@@ -13,4 +13,6 @@ def join_queue():
     user = get_current_user()
     store_player_metadata(user)
     result = add_to_queue(user.id)
-    return result
+    if result["status"] in {"already_queued", "retry_failed"}:
+        return (result, 409)
+    return (result, 200)
