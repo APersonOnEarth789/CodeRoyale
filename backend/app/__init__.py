@@ -9,7 +9,7 @@ jwt = JWTManager()
 def create_app(config_override=None):
     app = Flask(__name__)
 
-    app.config["JWT_SECRET_KEY"] = "CodeRoyale"
+    app.config["JWT_SECRET_KEY"] = "CodeRoyaleSuperSecureKey1234567890!"
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://justinliu:@localhost:5432/coderoyale"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
