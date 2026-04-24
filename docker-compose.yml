@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: ./frontend        # ← points to the frontend folder
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  frontend-dev:
+    build:
+      context: ./frontend        # ← same
+      dockerfile: dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app          # ← mount the frontend folder
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true

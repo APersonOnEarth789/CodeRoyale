@@ -4,9 +4,32 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './home.jsx';
+import Login from './auth/login.jsx';
 
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
+
+  return (
+    <>
+      <section id="center">
+        <h1>Code Royale</h1>
+      </section>
+    </>
+  )
+
+  const [count, setCount] = useState(0)
   return (
     <>
       <section id="center">

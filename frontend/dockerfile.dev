@@ -1,0 +1,17 @@
+# Development image — runs the Vite dev server with hot module replacement.
+# NOT for production. Use Dockerfile for that.
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+# Source is mounted as a volume by docker-compose, not copied here,
+# so edits on your host immediately reflect inside the container.
+
+EXPOSE 5173
+
+# --host 0.0.0.0 makes Vite listen on all interfaces inside the container
+# so it's reachable from your host machine via localhost:5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
