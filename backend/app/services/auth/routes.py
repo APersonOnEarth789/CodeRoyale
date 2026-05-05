@@ -1,4 +1,4 @@
-from flask import Blueprint, abort
+from flask import Blueprint, abort, jsonify
 from flask_pydantic import validate
 from flask_jwt_extended import create_access_token
 from .dependencies import authenticate_user, get_user
@@ -15,16 +15,20 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 def login_for_access_token(body: UserLogin) -> Token:
     user = authenticate_user(body.username, body.password)
     if not user:
-        abort(401, description="Incorrect username or password")
+        return jsonify({"message": "Incorrect username or password"}), 401
+        # abort(401, description="Incorrect username or password")
     access_token = create_access_token(identity=body.username)
     return {"access_token": access_token, "token_type": "bearer"}
 
 @auth_bp.route("/signup", methods=["POST"])
 @validate()
 def signup(body: UserCreate) -> UserResponse:
+    # print(body)
     db_user = get_user(body.username)
     if db_user:
-        abort(400, description="Username is already registered")
+        return jsonify({"message": "Username is already registered"}), 400
+        # abort(400, description="Username is already registered")
+    # print(body)
     hashed_password = get_password_hash(body.password)
     db_user = User(username=body.username, hashed_password=hashed_password)
     db.session.add(db_user)
