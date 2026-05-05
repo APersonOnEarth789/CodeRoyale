@@ -10,56 +10,12 @@ const Register = () => {
   const [registerName, setRegisterName] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  // const { users, setUsers } = useOutletContext();
   const navigate = useNavigate();
-
-  // email: 67, name: 6767, password: 67676767
 
   const submit = async (e) => {
     e.preventDefault();
-
-    if (registerPassword !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8000/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({"password": registerPassword, "username": registerName})
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("USER_TOKEN", data.access_token);
-        localStorage.setItem("USER_EMAIL", registerEmail);
-        navigate("/dashboard");
-      } else {
-        const text = await response.text();
-        // console.log("RAW RESPONSE:", text);
-
-        let message = "User Register Error";
-        if (text.includes("<p>")) {
-          // extract message from HTML
-          const match = text.match(/<p>(.*?)<\/p>/);
-          if (match) message = match[1];
-        } else {
-          try {
-            const data = JSON.parse(text);
-            message = data.message || data.detail || message;
-          } catch {}
-        }
-
-        // const errorData = await response.json();
-        // console.log(errorData);
-
-        setError(message);
-        alert(message);
-      }
-    } catch (error) {}
+    navigate("/dashboard");
   }
 
   const toLandingPage = (e) => {

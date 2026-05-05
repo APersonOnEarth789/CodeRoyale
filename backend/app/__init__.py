@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from .core.database import db
 from .services.auth.routes import auth_bp
@@ -10,8 +9,6 @@ jwt = JWTManager()
 
 def create_app(config_override=None):
     app = Flask(__name__)
-
-    CORS(app, origins=["http://localhost:5173"])
 
     app.config["JWT_SECRET_KEY"] = "CodeRoyaleSuperSecureKey1234567890!"
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
@@ -29,8 +26,5 @@ def create_app(config_override=None):
 
     # Register tables
     from .services.users import models
-
-    with app.app_context():
-        db.create_all()
     
     return app
