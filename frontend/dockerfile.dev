@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# COPY . .
+
 # Source is mounted as a volume by docker-compose, not copied here,
 # so edits on your host immediately reflect inside the container.
 
